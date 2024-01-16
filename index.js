@@ -1,5 +1,7 @@
 const express = require("express");
 require("dotenv").config();
+
+const cors = require("cors");
 const app = express();
 
 const reviewMiddleware = require("./middleware/reviews");
@@ -11,6 +13,7 @@ async function main() {
   await connectToDB();
 
   app.use(express.json());
+  app.use(cors({ origin: true, credentials: true }));
 
   app.use("/api", reviewMiddleware);
 
