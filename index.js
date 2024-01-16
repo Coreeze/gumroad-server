@@ -2,44 +2,28 @@ const express = require("express");
 require("dotenv").config();
 const app = express();
 
-const Review = require("./models/review");
+const reviewMiddleware = require("./middleware/reviews");
 const { connectToDB } = require("./db");
+
+const PORT = 8000;
 
 async function main() {
   await connectToDB();
 
   app.use(express.json());
 
-  app.get("/api/review/get", async (req, res) => {
-    try {
-      const { productId } = req.query;
+  app.use("/api", reviewMiddleware);
 
-      const reviews = await Review.find({ productId });
-      res.status(200).send(reviews);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ error: "There was an error" });
-    }
+  app.listen(PORT, () => {
+    console.log("Server is up on port " + PORT);
   });
 
-  app.post("/api/review/save", async (req, res) => {
-    try {
-      const { productId, stars, comment } = req.body;
-
-      const review = new Review({ productId, stars, comment });
-      await review.save();
-
-      res.status(200).send(review);
-    } catch (error) {
-      console.log(error);
-      res.status(500).send({ error: "There was an error" });
-    }
+  /**
+   * If endpont doens't exist
+   */
+  app.use(async (req, res) => {
+    res.status(404).send({ error: "Endpoint not found" });
   });
-
-  const PORT = 8000;
-  app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 }
 
-main().catch((error) => {
-  console.log(error);
-});
+main().catch(console.error);
