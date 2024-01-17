@@ -1,1 +1,1 @@
-web: node --inspect index.js -p $PORT
+web: bundle exec thin start -p $PORT
