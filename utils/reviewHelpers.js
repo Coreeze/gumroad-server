@@ -1,8 +1,8 @@
 const Review = require("../models/review");
 
-async function createReview(productId, stars, comment) {
+async function createReview(productId, stars, comment, user) {
   try {
-    const review = new Review({ productId, stars, comment });
+    const review = new Review({ productId, stars, comment, user });
     await review.save();
 
     return review;
@@ -12,9 +12,9 @@ async function createReview(productId, stars, comment) {
   }
 }
 
-async function getReview(productId) {
+async function getReview(productId, user) {
   try {
-    const review = await Review.findOne({ productId });
+    const review = await Review.findOne({ productId, user });
 
     return review;
   } catch (error) {
@@ -23,10 +23,10 @@ async function getReview(productId) {
   }
 }
 
-async function updateReview(productId, stars, comment) {
+async function updateReview(productId, stars, comment, user) {
   try {
     let review = await Review.findOneAndUpdate(
-      { productId },
+      { productId, user },
       { stars, comment },
       { new: true }
     );

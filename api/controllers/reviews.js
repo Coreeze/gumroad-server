@@ -9,14 +9,14 @@ const {
  */
 module.exports.create = async (req, res) => {
   try {
-    const { productId, stars, comment } = req.body;
+    const { productId, stars, comment, user } = req.body;
 
-    let review = await getReview(productId);
+    let review = await getReview(productId, user);
 
     if (review) {
-      review = await updateReview(productId, stars, comment);
+      review = await updateReview(productId, stars, comment, user);
     } else {
-      review = await createReview(productId, stars, comment);
+      review = await createReview(productId, stars, comment, user);
     }
 
     res.status(200).send(review);
@@ -31,9 +31,17 @@ module.exports.create = async (req, res) => {
  */
 module.exports.get = async (req, res) => {
   try {
-    const { productId } = req.query;
+    const { productId, user } = req.query;
 
-    const review = await getReview(productId);
+    if (!productId || !user) {
+      return res.status(400).send({ error: "Missing required fields" });
+    }
+
+    const review = await getReview(productId, user);
+
+    if (!review) {
+      return res.status(404).send({ error: "Review not found" });
+    }
 
     res.status(200).send(review);
   } catch (error) {
