@@ -2,6 +2,7 @@ const {
   getReview,
   updateReview,
   createReview,
+  getAllReviews,
 } = require("../../utils/reviewHelpers");
 
 /**
@@ -40,10 +41,34 @@ module.exports.get = async (req, res) => {
     const review = await getReview(productId, user);
 
     if (!review) {
-      return res.status(404).send({ error: "Review not found" });
+      return res.status(404).send({ error: "No review found" });
     }
 
     res.status(200).send(review);
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error: "There was an error" });
+  }
+};
+
+/**
+ * GET API to fetch all reviews for a product
+ */
+module.exports.getAll = async (req, res) => {
+  try {
+    const { productId } = req.query;
+
+    if (!productId) {
+      return res.status(400).send({ error: "Missing productId" });
+    }
+
+    const reviews = await getAllReviews(productId);
+
+    if (!reviews) {
+      return res.status(404).send({ error: "No reviews found" });
+    }
+
+    res.status(200).send(reviews);
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: "There was an error" });

@@ -23,6 +23,17 @@ async function getReview(productId, user) {
   }
 }
 
+async function getAllReviews(productId) {
+  try {
+    const review = await Review.find({ productId });
+
+    return review;
+  } catch (error) {
+    console.log(error);
+    return null;
+  }
+}
+
 async function updateReview(productId, stars, comment, user) {
   try {
     let review = await Review.findOneAndUpdate(
@@ -42,4 +53,5 @@ module.exports = {
   getReview,
   updateReview,
   createReview,
+  getAllReviews,
 };

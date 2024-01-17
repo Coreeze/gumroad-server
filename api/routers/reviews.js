@@ -13,4 +13,9 @@ router.post("/create", controller.create);
  */
 router.get("/get", controller.get);
 
+/**
+ * GET API to fetch all reviews for a product
+ */
+router.get("/get_all", controller.getAll);
+
 module.exports = router;
